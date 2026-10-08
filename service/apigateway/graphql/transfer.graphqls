@@ -1,0 +1,129 @@
+# Input Types
+input FindAllTransferInput {
+  page: Int
+  page_size: Int
+  search: String
+}
+
+input FindByIdTransferInput {
+  transfer_id: Int!
+}
+
+input FindTransferByTransferFromInput {
+  transfer_from: String!
+}
+
+input FindTransferByTransferToInput {
+  transfer_to: String!
+}
+
+input CreateTransferInput {
+  transfer_from: String!
+  transfer_to: String!
+  transfer_amount: Int!
+}
+
+input UpdateTransferInput {
+  transfer_id: Int!
+  transfer_from: String!
+  transfer_to: String!
+  transfer_amount: Int!
+}
+
+# Types
+type TransferResponse {
+  id: Int!
+  transfer_no: String!
+  transfer_from: String!
+  transfer_to: String!
+  transfer_amount: Int!
+  transfer_time: String!
+  created_at: String!
+  updated_at: String!
+}
+
+type TransferResponseDeletedAt {
+  id: Int!
+  transfer_no: String!
+  transfer_from: String!
+  transfer_to: String!
+  transfer_amount: Int!
+  transfer_time: String!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+# response Types
+type ApiResponseTransfer {
+  status: String!
+  message: String!
+  data: TransferResponse
+}
+
+type ApiResponseTransferDeleteAt {
+  status: String!
+  message: String!
+  data: TransferResponseDeletedAt
+}
+
+type ApiResponseTransfers {
+  status: String!
+  message: String!
+  data: [TransferResponse!]!
+}
+
+type ApiResponseTransferDelete {
+  status: String!
+  message: String!
+}
+
+type ApiResponseTransferAll {
+  status: String!
+  message: String!
+}
+
+type ApiResponsePaginationTransfer {
+  status: String!
+  message: String!
+  data: [TransferResponse!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponsePaginationTransferDeleteAt {
+  status: String!
+  message: String!
+  data: [TransferResponseDeletedAt!]!
+  pagination: PaginationMeta!
+}
+
+# queries & mutations
+extend type Query {
+  findAllTransfer(input: FindAllTransferInput!): ApiResponsePaginationTransfer!
+  findByIdTransfer(input: FindByIdTransferInput!): ApiResponseTransfer!
+  findTransferByTransferFrom(
+    input: FindTransferByTransferFromInput!
+  ): ApiResponseTransfers!
+  findTransferByTransferTo(
+    input: FindTransferByTransferToInput!
+  ): ApiResponseTransfers!
+  findByActiveTransfer(
+    input: FindAllTransferInput!
+  ): ApiResponsePaginationTransferDeleteAt!
+  findByTrashedTransfer(
+    input: FindAllTransferInput!
+  ): ApiResponsePaginationTransferDeleteAt!
+}
+
+extend type Mutation {
+  createTransfer(input: CreateTransferInput!): ApiResponseTransfer!
+  updateTransfer(input: UpdateTransferInput!): ApiResponseTransfer!
+  trashedTransfer(input: FindByIdTransferInput!): ApiResponseTransferDeleteAt!
+  restoreTransfer(input: FindByIdTransferInput!): ApiResponseTransferDeleteAt!
+  deleteTransferPermanent(
+    input: FindByIdTransferInput!
+  ): ApiResponseTransferDelete!
+
+  restoreAllTransfer: ApiResponseTransferAll!
+  deleteAllTransferPermanent: ApiResponseTransferAll!
+}

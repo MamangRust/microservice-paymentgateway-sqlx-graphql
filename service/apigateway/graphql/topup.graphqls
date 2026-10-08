@@ -1,0 +1,114 @@
+# input Types
+input FindAllTopupInput {
+  page: Int
+  page_size: Int
+  search: String
+}
+
+input FindByIdTopupInput {
+  topup_id: Int!
+}
+
+input FindByCardNumberTopupInput {
+  card_number: String!
+  year: Int
+}
+
+input CreateTopupInput {
+  card_number: String!
+  topup_no: String!
+  topup_amount: Int!
+  topup_method: String!
+}
+
+input UpdateTopupInput {
+  topup_id: Int!
+  card_number: String!
+  topup_amount: Int!
+  topup_method: String!
+}
+
+# types
+type TopupResponse {
+  id: Int!
+  card_number: String!
+  topup_no: String!
+  topup_amount: Int!
+  topup_method: String!
+  topup_time: String
+  created_at: String!
+  updated_at: String!
+}
+
+type TopupResponseDeletedAt {
+  id: Int!
+  card_number: String!
+  topup_no: String!
+  topup_amount: Int!
+  topup_method: String!
+  topup_time: String
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+# response Types
+type ApiResponseTopup {
+  status: String!
+  message: String!
+  data: TopupResponse
+}
+
+type ApiResponseTopupDeleteAt {
+  status: String!
+  message: String!
+  data: TopupResponseDeletedAt
+}
+
+type ApiResponsePaginationTopup {
+  status: String!
+  message: String!
+  data: [TopupResponse!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponsePaginationTopupDeleteAt {
+  status: String!
+  message: String!
+  data: [TopupResponseDeletedAt!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponseTopupAll {
+  status: String!
+  message: String!
+}
+
+type ApiResponseTopupDelete {
+  status: String!
+  message: String!
+}
+
+# queries & mutations
+extend type Query {
+  findAllTopup(input: FindAllTopupInput!): ApiResponsePaginationTopup!
+  findByIdTopup(input: FindByIdTopupInput!): ApiResponseTopup!
+  findByCardNumberTopup(input: FindByCardNumberTopupInput!): ApiResponseTopup!
+  findByActiveTopup(
+    input: FindAllTopupInput!
+  ): ApiResponsePaginationTopupDeleteAt!
+  findByTrashedTopup(
+    input: FindAllTopupInput!
+  ): ApiResponsePaginationTopupDeleteAt!
+}
+
+extend type Mutation {
+  createTopup(input: CreateTopupInput!): ApiResponseTopup!
+  updateTopup(input: UpdateTopupInput!): ApiResponseTopup!
+  trashedTopup(input: FindByIdTopupInput!): ApiResponseTopupDeleteAt!
+  restoreTopup(input: FindByIdTopupInput!): ApiResponseTopupDeleteAt!
+  deleteTopupPermanent(input: FindByIdTopupInput!): ApiResponseTopupDelete!
+
+  restoreAllTopup: ApiResponseTopupAll!
+  deleteAllTopupPermanent: ApiResponseTopupAll!
+}

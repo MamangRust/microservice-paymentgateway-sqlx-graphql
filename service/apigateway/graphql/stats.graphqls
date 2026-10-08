@@ -1,0 +1,345 @@
+# Stats GraphQL Schema - connects to stats-reader service
+
+# Input Types
+input FindYearStatsInput {
+  year: Int!
+}
+
+input FindYearCardNumberStatsInput {
+  year: Int!
+  card_number: String!
+}
+
+input FindMonthlyYearStatsInput {
+  year: Int!
+  month: Int!
+}
+
+input FindMonthlyYearCardNumberStatsInput {
+  card_number: String!
+  year: Int!
+  month: Int!
+}
+
+input FindYearMerchantStatsInput {
+  year: Int!
+}
+
+input FindYearMerchantByIdStatsInput {
+  year: Int!
+  merchant_id: Int!
+}
+
+input FindYearMerchantByApikeyStatsInput {
+  year: Int!
+  api_key: String!
+}
+
+input FindMerchantTransactionsInput {
+  page: Int
+  page_size: Int
+  search: String
+  merchant_id: Int!
+}
+
+input FindMerchantTransactionsByApikeyInput {
+  page: Int
+  page_size: Int
+  search: String
+  api_key: String!
+}
+
+# Response Types
+type MonthlyAmountResponse {
+  month: String!
+  total_amount: Int!
+}
+
+type YearlyAmountResponse {
+  year: String!
+  total_amount: Int!
+}
+
+type MonthlyBalanceResponse {
+  month: String!
+  total_balance: Int!
+}
+
+type YearlyBalanceResponse {
+  year: String!
+  total_balance: Int!
+}
+
+type MonthlyStatusResponse {
+  year: String!
+  month: String!
+  total_success: Int!
+  total_amount: Int!
+}
+
+type YearlyStatusResponse {
+  year: String!
+  total_success: Int!
+  total_amount: Int!
+}
+
+type MonthlyMethodResponse {
+  month: String!
+  payment_method: String!
+  total_amount: Int!
+}
+
+type YearlyMethodResponse {
+  year: String!
+  payment_method: String!
+  total_amount: Int!
+}
+
+type DashboardCardResponse {
+  total_balance: Int!
+  total_topup: Int!
+  total_withdraw: Int!
+  total_transaction: Int!
+  total_transfer: Int!
+}
+
+type DashboardCardByNumberResponse {
+  total_balance: Int!
+  total_topup: Int!
+  total_withdraw: Int!
+  total_transaction: Int!
+  total_transfer_send: Int!
+  total_transfer_receiver: Int!
+}
+
+type MerchantTransactionStatsResponse {
+  id: Int!
+  card_number: String!
+  amount: Int!
+  payment_method: String!
+  merchant_id: Int!
+  merchant_name: String!
+  transaction_time: String!
+  created_at: String!
+  updated_at: String!
+}
+
+# API Response Types
+type ApiResponseMonthlyAmount {
+  status: String!
+  message: String!
+  data: [MonthlyAmountResponse!]!
+}
+
+type ApiResponseYearlyAmount {
+  status: String!
+  message: String!
+  data: [YearlyAmountResponse!]!
+}
+
+type ApiResponseMonthlyBalance {
+  status: String!
+  message: String!
+  data: [MonthlyBalanceResponse!]!
+}
+
+type ApiResponseYearlyBalance {
+  status: String!
+  message: String!
+  data: [YearlyBalanceResponse!]!
+}
+
+type ApiResponseMonthlyStatus {
+  status: String!
+  message: String!
+  data: [MonthlyStatusResponse!]!
+}
+
+type ApiResponseYearlyStatus {
+  status: String!
+  message: String!
+  data: [YearlyStatusResponse!]!
+}
+
+type ApiResponseMonthlyMethod {
+  status: String!
+  message: String!
+  data: [MonthlyMethodResponse!]!
+}
+
+type ApiResponseYearlyMethod {
+  status: String!
+  message: String!
+  data: [YearlyMethodResponse!]!
+}
+
+type ApiResponseDashboardCard {
+  status: String!
+  message: String!
+  data: DashboardCardResponse!
+}
+
+type ApiResponseDashboardCardByNumber {
+  status: String!
+  message: String!
+  data: DashboardCardByNumberResponse
+}
+
+type ApiResponseMerchantTransactions {
+  status: String!
+  message: String!
+  data: [MerchantTransactionStatsResponse!]!
+  pagination: PaginationMeta!
+}
+
+# Card Stats Queries
+extend type Query {
+  # Balance
+  findMonthlyBalanceStats(input: FindYearStatsInput!): ApiResponseMonthlyBalance!
+  findYearlyBalanceStats(input: FindYearStatsInput!): ApiResponseYearlyBalance!
+  findMonthlyBalanceByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyBalance!
+  findYearlyBalanceByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyBalance!
+
+  # Card Dashboard
+  dashboardCardStats: ApiResponseDashboardCard!
+  dashboardCardByNumberStats(input: FindByCardNumberInput!): ApiResponseDashboardCardByNumber!
+
+  # Topup
+  findMonthlyTopupAmountStats(input: FindYearStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTopupAmountStats(input: FindYearStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyTopupAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTopupAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyAmount!
+
+  # Withdraw
+  findMonthlyWithdrawAmountStats(input: FindYearStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyWithdrawAmountStats(input: FindYearStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyWithdrawAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyWithdrawAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyAmount!
+
+  # Transaction
+  findMonthlyTransactionAmountStats(input: FindYearStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTransactionAmountStats(input: FindYearStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyTransactionAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTransactionAmountByCardNumberStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyAmount!
+
+  # Transfer
+  findMonthlyTransferAmountStats(input: FindYearStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTransferAmountStats(input: FindYearStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyTransferSenderAmountStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTransferSenderAmountStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyTransferReceiverAmountStats(input: FindYearCardNumberStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyTransferReceiverAmountStats(input: FindYearCardNumberStatsInput!): ApiResponseYearlyAmount!
+
+  # Merchant Transactions
+  findMerchantTransactionsStats(input: FindMerchantTransactionsInput!): ApiResponseMerchantTransactions!
+  findMerchantTransactionsByApikeyStats(input: FindMerchantTransactionsByApikeyInput!): ApiResponseMerchantTransactions!
+
+  # Topup Stats
+  findMonthlyTopupStatusSuccessStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTopupStatusSuccessStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyTopupStatusFailedStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTopupStatusFailedStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyTopupMethodsStats(input: FindYearStatsInput!): ApiResponseMonthlyMethod!
+  findYearlyTopupMethodsStats(input: FindYearStatsInput!): ApiResponseYearlyMethod!
+
+  # Transaction Stats
+  findMonthlyTransactionStatusSuccessStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTransactionStatusSuccessStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyTransactionStatusFailedStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTransactionStatusFailedStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyTransactionMethodsStats(input: FindYearStatsInput!): ApiResponseMonthlyMethod!
+  findYearlyTransactionMethodsStats(input: FindYearStatsInput!): ApiResponseYearlyMethod!
+
+  # Transfer Stats
+  findMonthlyTransferStatusSuccessStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTransferStatusSuccessStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyTransferStatusFailedStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyTransferStatusFailedStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+
+  # Withdraw Stats
+  findMonthlyWithdrawStatusSuccessStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyWithdrawStatusSuccessStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+  findMonthlyWithdrawStatusFailedStats(input: FindMonthlyYearStatsInput!): ApiResponseMonthlyStatus!
+  findYearlyWithdrawStatusFailedStats(input: FindYearStatsInput!): ApiResponseYearlyStatus!
+
+  # Saldo Stats
+  findMonthlySaldoBalanceStats(input: FindYearStatsInput!): ApiResponseMonthlyBalance!
+  findYearlySaldoBalanceStats(input: FindYearStatsInput!): ApiResponseYearlyBalance!
+  findMonthlySaldoTotalStats(input: FindYearStatsInput!): ApiResponseMonthlyAmount!
+  findYearlySaldoTotalStats(input: FindYearStatsInput!): ApiResponseYearlyAmount!
+}
+
+# Merchant Stats Queries
+extend type Query {
+  findMonthlyMerchantAmountStats(input: FindYearMerchantStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantAmountStats(input: FindYearMerchantStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyMerchantMethodStats(input: FindYearMerchantStatsInput!): ApiResponseMonthlyMethod!
+  findYearlyMerchantMethodStats(input: FindYearMerchantStatsInput!): ApiResponseYearlyMethod!
+  findMonthlyMerchantTotalAmountStats(input: FindYearMerchantStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantTotalAmountStats(input: FindYearMerchantStatsInput!): ApiResponseYearlyAmount!
+
+  findMonthlyMerchantAmountByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantAmountByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyMerchantMethodByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseMonthlyMethod!
+  findYearlyMerchantMethodByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseYearlyMethod!
+  findMonthlyMerchantTotalAmountByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantTotalAmountByIdStats(input: FindYearMerchantByIdStatsInput!): ApiResponseYearlyAmount!
+
+  findMonthlyMerchantAmountByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantAmountByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseYearlyAmount!
+  findMonthlyMerchantMethodByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseMonthlyMethod!
+  findYearlyMerchantMethodByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseYearlyMethod!
+  findMonthlyMerchantTotalAmountByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseMonthlyAmount!
+  findYearlyMerchantTotalAmountByApikeyStats(input: FindYearMerchantByApikeyStatsInput!): ApiResponseYearlyAmount!
+}
+
+extend type Mutation {
+  # Stats Writer mutations
+  writeTopupEvent(input: TopupEventInput!): ApiResponseVerifyCode!
+  writeTransactionEvent(input: TransactionEventInput!): ApiResponseVerifyCode!
+  writeTransferEvent(input: TransferEventInput!): ApiResponseVerifyCode!
+  writeSaldoEvent(input: SaldoEventInput!): ApiResponseVerifyCode!
+  writeWithdrawEvent(input: WithdrawEventInput!): ApiResponseVerifyCode!
+}
+
+# Stats Writer Input Types
+input TopupEventInput {
+  topup_id: Int!
+  topup_no: String!
+  card_number: String!
+  card_type: String!
+  card_provider: String!
+  amount: Int!
+  payment_method: String!
+  status: String!
+}
+
+input TransactionEventInput {
+  transaction_id: Int!
+  transaction_no: String!
+  card_number: String!
+  amount: Int!
+  status: String!
+}
+
+input TransferEventInput {
+  transfer_id: Int!
+  transfer_no: String!
+  source_card: String!
+  destination_card: String!
+  amount: Int!
+  status: String!
+}
+
+input SaldoEventInput {
+  card_number: String!
+  total_balance: Int!
+}
+
+input WithdrawEventInput {
+  withdraw_id: Int!
+  withdraw_no: String!
+  card_number: String!
+  amount: Int!
+  status: String!
+}

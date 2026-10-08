@@ -1,0 +1,136 @@
+# input Types
+input FindAllTransactionInput {
+  page: Int
+  page_size: Int
+  search: String
+}
+
+input FindByIdTransactionInput {
+  transaction_id: Int!
+}
+
+input FindTransactionByMerchantIdInput {
+  merchant_id: Int!
+}
+
+input CreateTransactionInput {
+  api_key: String!
+  card_number: String!
+  amount: Int!
+  payment_method: String!
+  merchant_id: Int!
+  transaction_time: String
+}
+
+input UpdateTransactionInput {
+  transaction_id: Int!
+  api_key: String!
+  card_number: String!
+  amount: Int!
+  payment_method: String!
+  merchant_id: Int!
+  transaction_time: String
+}
+
+# Types
+type TransactionResponse {
+  id: Int!
+  card_number: String!
+  transaction_no: String!
+  amount: Int!
+  payment_method: String!
+  merchant_id: Int!
+  transaction_time: String!
+  created_at: String!
+  updated_at: String!
+}
+
+type TransactionResponseDeletedAt {
+  id: Int!
+  card_number: String!
+  transaction_no: String!
+  amount: Int!
+  payment_method: String!
+  merchant_id: Int!
+  transaction_time: String!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+# Response Types
+type ApiResponseTransaction {
+  status: String!
+  message: String!
+  data: TransactionResponse
+}
+
+type ApiResponseTransactions {
+  status: String!
+  message: String!
+  data: [TransactionResponse!]!
+}
+
+type ApiResponseTransactionDelete {
+  status: String!
+  message: String!
+}
+
+type ApiResponseTransactionAll {
+  status: String!
+  message: String!
+}
+
+type ApiResponseTransactionDeleteAt {
+  status: String!
+  message: String!
+  data: TransactionResponseDeletedAt
+}
+
+type ApiResponsePaginationTransaction {
+  status: String!
+  message: String!
+  data: [TransactionResponse!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponsePaginationTransactionDeleteAt {
+  status: String!
+  message: String!
+  data: [TransactionResponseDeletedAt!]!
+  pagination: PaginationMeta!
+}
+
+# queries & mutations
+extend type Query {
+  findAllTransaction(
+    input: FindAllTransactionInput!
+  ): ApiResponsePaginationTransaction!
+  findByIdTransaction(input: FindByIdTransactionInput!): ApiResponseTransaction!
+  findTransactionByMerchantId(
+    input: FindTransactionByMerchantIdInput!
+  ): ApiResponseTransactions!
+  findByActiveTransaction(
+    input: FindAllTransactionInput!
+  ): ApiResponsePaginationTransactionDeleteAt!
+  findByTrashedTransaction(
+    input: FindAllTransactionInput!
+  ): ApiResponsePaginationTransactionDeleteAt!
+}
+
+extend type Mutation {
+  createTransaction(input: CreateTransactionInput!): ApiResponseTransaction!
+  updateTransaction(input: UpdateTransactionInput!): ApiResponseTransaction!
+  trashedTransaction(
+    input: FindByIdTransactionInput!
+  ): ApiResponseTransactionDeleteAt!
+  restoreTransaction(
+    input: FindByIdTransactionInput!
+  ): ApiResponseTransactionDeleteAt!
+  deleteTransactionPermanent(
+    input: FindByIdTransactionInput!
+  ): ApiResponseTransactionDelete!
+
+  restoreAllTransaction: ApiResponseTransactionAll!
+  deleteAllTransactionPermanent: ApiResponseTransactionAll!
+}

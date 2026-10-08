@@ -1,0 +1,33 @@
+package service
+
+import (
+	"context"
+	"time"
+
+	db "github.com/MamangRust/microservice-payment-gateway-grpc/service/transaction/database/schema"
+	"github.com/MamangRust/microservice-payment-gateway-grpc/shared/domain/requests"
+)
+
+// TransactionQueryService handles queries related to transactions.
+type TransactionQueryService interface {
+	FindAll(ctx context.Context, req *requests.FindAllTransactions) ([]*db.GetTransactionsRow, *int, error)
+	FindAllByCardNumber(ctx context.Context, req *requests.FindAllTransactionCardNumber) ([]*db.GetTransactionsByCardNumberRow, *int, error)
+	FindById(ctx context.Context, transactionID int) (*db.GetTransactionByIDRow, error)
+	FindByActive(ctx context.Context, req *requests.FindAllTransactions) ([]*db.GetActiveTransactionsRow, *int, error)
+	FindByTrashed(ctx context.Context, req *requests.FindAllTransactions) ([]*db.GetTrashedTransactionsRow, *int, error)
+	FindTransactionByMerchantId(ctx context.Context, merchant_id int) ([]*db.GetTransactionsByMerchantIDRow, error)
+	FindAllTransactionsByMerchantId(ctx context.Context, merchantID int, search string, page, pageSize int) ([]*db.GetTransactionsRow, *int, error)
+}
+
+type TransactionCommandService interface {
+	Create(ctx context.Context, apiKey string, request *requests.CreateTransactionRequest) (*db.UpdateTransactionStatusRow, error)
+	Update(ctx context.Context, apiKey string, request *requests.UpdateTransactionRequest) (*db.UpdateTransactionRow, error)
+	TrashedTransaction(ctx context.Context, transaction_id int) (*db.Transaction, error)
+	RestoreTransaction(ctx context.Context, transaction_id int) (*db.Transaction, error)
+	DeleteTransactionPermanent(ctx context.Context, transaction_id int) (bool, error)
+
+	RestoreAllTransaction(ctx context.Context) (bool, error)
+	DeleteAllTransactionPermanent(ctx context.Context) (bool, error)
+	RecoverStuckOperations(ctx context.Context, olderThan time.Duration, maxRows int32) error
+	StartRecoveryWorker(ctx context.Context, interval, olderThan time.Duration, maxRows int32)
+}

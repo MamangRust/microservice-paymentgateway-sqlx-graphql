@@ -1,0 +1,113 @@
+# Input Types
+input FindAllWithdrawInput {
+  page: Int
+  page_size: Int
+  search: String
+}
+
+input FindByIdWithdrawInput {
+  withdraw_id: Int!
+}
+
+input CreateWithdrawInput {
+  card_number: String!
+  withdraw_amount: Int!
+  withdraw_time: String!
+}
+
+input UpdateWithdrawInput {
+  withdraw_id: Int!
+  card_number: String!
+  withdraw_amount: Int!
+  withdraw_time: String!
+}
+
+# Types
+type WithdrawResponse {
+  withdraw_id: Int!
+  withdraw_no: String!
+  card_number: String!
+  withdraw_amount: Int!
+  withdraw_time: String!
+  created_at: String!
+  updated_at: String!
+}
+
+type WithdrawResponseDeletedAt {
+  withdraw_id: Int!
+  withdraw_no: String!
+  card_number: String!
+  withdraw_amount: Int!
+  withdraw_time: String!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+# Response Types
+type ApiResponseWithdraw {
+  status: String!
+  message: String!
+  data: WithdrawResponse
+}
+
+type ApiResponseWithdrawDeleteAt {
+  status: String!
+  message: String!
+  data: WithdrawResponseDeletedAt
+}
+
+type ApiResponsesWithdraw {
+  status: String!
+  message: String!
+  data: [WithdrawResponse!]!
+}
+
+type ApiResponseWithdrawDelete {
+  status: String!
+  message: String!
+}
+
+type ApiResponseWithdrawAll {
+  status: String!
+  message: String!
+}
+
+type ApiResponsePaginationWithdraw {
+  status: String!
+  message: String!
+  data: [WithdrawResponse!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponsePaginationWithdrawDeleteAt {
+  status: String!
+  message: String!
+  data: [WithdrawResponseDeletedAt!]!
+  pagination: PaginationMeta!
+}
+
+# queries & mutations
+extend type Query {
+  findAllWithdraw(input: FindAllWithdrawInput!): ApiResponsePaginationWithdraw!
+  findByIdWithdraw(input: FindByIdWithdrawInput!): ApiResponseWithdraw!
+  findByActiveWithdraw(
+    input: FindAllWithdrawInput!
+  ): ApiResponsePaginationWithdrawDeleteAt!
+  findByTrashedWithdraw(
+    input: FindAllWithdrawInput!
+  ): ApiResponsePaginationWithdrawDeleteAt!
+}
+
+extend type Mutation {
+  createWithdraw(input: CreateWithdrawInput!): ApiResponseWithdraw!
+  updateWithdraw(input: UpdateWithdrawInput!): ApiResponseWithdraw!
+  trashedWithdraw(input: FindByIdWithdrawInput!): ApiResponseWithdrawDeleteAt!
+  restoreWithdraw(input: FindByIdWithdrawInput!): ApiResponseWithdrawDeleteAt!
+  deleteWithdrawPermanent(
+    input: FindByIdWithdrawInput!
+  ): ApiResponseWithdrawDelete!
+
+  restoreAllWithdraw: ApiResponseWithdrawAll!
+  deleteAllWithdrawPermanent: ApiResponseWithdrawAll!
+}

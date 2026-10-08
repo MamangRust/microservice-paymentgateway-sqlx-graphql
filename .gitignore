@@ -1,0 +1,15 @@
+observability/loki-data
+postman
+test_api
+bin/
+vendor/
+.env
+# Env hasil copy dari *.env.example — berisi kredensial, jangan di-commit.
+# Template-nya sendiri (docker.env.example / .env.example) tetap di-commit.
+deployments/local/docker.env
+deployments/kubernetes/docker.env
+*.log
+tmp/
+.idea/
+.vscode/
+k6

@@ -1,0 +1,121 @@
+## input
+input FindAllCardInput {
+  page: Int
+  page_size: Int
+  search: String
+}
+
+input FindByIdCardInput {
+  card_id: Int!
+}
+
+input FindByUserIdCardInput {
+  user_id: Int!
+}
+
+input FindByCardNumberInput {
+  card_number: String!
+}
+
+input CreateCardInput {
+  user_id: Int!
+  card_type: String!
+  expire_date: String!
+  cvv: String!
+  card_provider: String!
+}
+
+input UpdateCardInput {
+  card_id: Int!
+  user_id: Int!
+  card_type: String!
+  expire_date: String!
+  cvv: String!
+  card_provider: String!
+}
+
+## Types
+type CardResponse {
+  id: Int!
+  user_id: Int!
+  card_number: String!
+  card_type: String!
+  expire_date: String!
+  cvv: String!
+  card_provider: String!
+  created_at: String!
+  updated_at: String!
+}
+
+type CardResponseDeleteAt {
+  id: Int!
+  user_id: Int!
+  card_number: String!
+  card_type: String!
+  expire_date: String!
+  cvv: String!
+  card_provider: String!
+  created_at: String!
+  updated_at: String!
+  deleted_at: String
+}
+
+## response types
+type ApiResponseCard {
+  status: String!
+  message: String!
+  data: CardResponse
+}
+
+type ApiResponseCardDeleteAt {
+  status: String!
+  message: String!
+  data: CardResponseDeleteAt
+}
+
+type ApiResponseCardDelete {
+  status: String!
+  message: String!
+}
+
+type ApiResponseCardAll {
+  status: String!
+  message: String!
+}
+
+type ApiResponsePaginationCard {
+  status: String!
+  message: String!
+  data: [CardResponse!]!
+  pagination: PaginationMeta!
+}
+
+type ApiResponsePaginationCardDeleteAt {
+  status: String!
+  message: String!
+  data: [CardResponseDeleteAt!]!
+  pagination: PaginationMeta!
+}
+
+## queries & mutation
+extend type Query {
+  findAllCard(input: FindAllCardInput!): ApiResponsePaginationCard!
+  findByIdCard(input: FindByIdCardInput!): ApiResponseCard!
+  findByUserIdCard(input: FindByUserIdCardInput!): ApiResponseCard!
+  findByCardNumber(input: FindByCardNumberInput!): ApiResponseCard!
+  findByActiveCard(input: FindAllCardInput!): ApiResponsePaginationCardDeleteAt!
+  findByTrashedCard(
+    input: FindAllCardInput!
+  ): ApiResponsePaginationCardDeleteAt!
+}
+
+extend type Mutation {
+  createCard(input: CreateCardInput!): ApiResponseCard!
+  updateCard(input: UpdateCardInput!): ApiResponseCard!
+  trashedCard(input: FindByIdCardInput!): ApiResponseCardDeleteAt!
+  restoreCard(input: FindByIdCardInput!): ApiResponseCardDeleteAt!
+  deleteCardPermanent(input: FindByIdCardInput!): ApiResponseCardDelete!
+
+  restoreAllCard: ApiResponseCardAll!
+  deleteAllCardPermanent: ApiResponseCardAll!
+}
